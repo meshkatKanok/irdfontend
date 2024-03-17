@@ -1,113 +1,234 @@
+import AudioPlayer from "@/components/AudioPlayer";
+import Categories from "@/components/Categories";
+import { getDua } from "@/Getfetchdata/getDua";
+import { getCategory } from "@/Getfetchdata/getcategory";
+import { getSubCategory } from "@/Getfetchdata/getsubcategory";
 import Image from "next/image";
+ 
 
-export default function Home() {
+export default async function Home() {
+  const category = await getCategory();
+  const categories = await category.props.categories;
+
+  const subcategory = await getSubCategory();
+  const subcategories = await subcategory.props.subcategories;
+
+  const dua = await getDua();
+  const duas = await dua.props.dua;
+
+  //console.log(subcategories);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <>
+      {/* ---Start middle part--- */}
+      <div className="col-span-12 xl:col-span-9 row-span-11 flex gap-4 ml-[-30px]  ">
+        {/* ---Start Category----- */}
+
+        <Categories
+          categories={categories}
+          subcategories={subcategories}
+          duas={duas}
+        />
+        {/* ---End Category----- */}
+
+        {/* ---Start body---- */}
+
+        <div className="w-[100%] md:w-[72%] overflow-y-scroll ">
+          <div className="flex flex-row justify-between mb-5 px-5 py-4 bg-white rounded-2lg items-center cursor-pointer dark:bg-dark-bg md:hidden">
+            <p className="flex gap-x-2 style-Kalpurush text-title font-medium leading-[25px]  dark:text-dark-text text-mss ">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                />
+              </svg>
+              Duas&apos;s importance
+            </p>
+          </div>
+
+          {subcategories &&
+            subcategories.map((subcategory, i) => (
+              <div key={i}>
+                {" "}
+                {/* --section div--- */}
+                <div
+                  id={`sec_${subcategory.subcat_id}`}
+                  className="flex  mb-5 flex-row bg-white rounded-[.625rem] px-5 py-4 justify-start items-center dark:bg-dark-bg border"
+                >
+                  <p className="text-title font-semibold leading-[25px]  text-[#000000]">
+                    <span className="text-[#1fa45b] font-medium leading-[25px] ">
+                      Section:
+                    </span>
+                    {subcategory.subcat_name_en}
+                  </p>
+                </div>
+                {/* ---Dua Div--- */}
+                {duas && duas
+                  .filter((dua) => dua.subcat_id === subcategory.subcat_id)
+                  .map((dua, i) => (
+                    <div
+                      key={i}
+                      id={`dua_${dua.dua_id}`}
+                      className=" bg-white rounded-[.625rem] border mb-5 dark:bg-dark-bg"
+                    >
+                      <div className="p-6">
+                        <div>
+                          <div className="flex flex-row  justify-start items-center ">
+                            <Image
+                              src="/assets/duacard.svg"
+                              alt="duacard"
+                              className="mr-3"
+                              height={30}
+                              width={30}
+                            />
+
+                            <p className="text-[#1fa45b] font-medium -dua-title">
+                              {dua.dua_name_en}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex flex-col justify-start items-start">
+                          <div className="w-full">
+                            <p
+                              className="   text-black mt-5 text-justify leading-8 font-normal text-[#383838]"
+                              style={{ fontSize: 18 }}
+                            >
+                              <span>{dua.top_en}</span>
+                            </p>
+                            <p
+                              dir="rtl"
+                              className="text-black my-8 text-right leading-loose text-6xl"
+                              style={{
+                                wordSpacing: 8,
+                                fontSize: 30,
+                                fontFamily: "me_quran",
+                              }}
+                            >
+                              {dua.dua_arabic}
+                            </p>
+
+                            <p />
+                            {dua.transliteration_en ? (
+                              <p
+                                className="    my-5 text-justify leading-8 italic text-black"
+                                style={{ fontSize: 18 }}
+                              >
+                                <span
+                                  id="transliteration"
+                                  className=" -dua-title -dua-title font-medium text-[black]"
+                                  style={{ fontSize: 18 }}
+                                >
+                                  Transliteration:
+                                </span>{" "}
+                                <span> {dua.transliteration_en}</span>
+                              </p>
+                            ) : (
+                              ""
+                            )}
+                            {dua.translation_en ? (
+                              <p
+                                id="translation"
+                                className="text-black my-5 text-title text-justify font-normal "
+                                style={{ fontSize: 18 }}
+                              >
+                                <span
+                                  className=" -dua-title -dua-title font-medium"
+                                  style={{ fontSize: 18 }}
+                                >
+                                  Translation:
+                                </span>{" "}
+                                <span> {dua.translation_en}</span>
+                              </p>
+                            ) : (
+                              ""
+                            )}
+                          </div>
+                          <div>
+                            <p
+                              className="mt-5   font-normal text-[#1fa45b]"
+                              style={{ fontSize: 18 }}
+                            >
+                              Reference:
+                            </p>
+                            <div
+                              className="mt-1   font-normal dark:text-dark-text text-[#383838]"
+                              style={{ fontSize: 18 }}
+                            >
+                              <span> {dua.refference_en}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex flex-col sm:flex-row items-center justify-between px-6">
+                          <AudioPlayer audioSrc={dua.audio} />
+                          <div className="flex items-center flex-row justify-between py-6 gap-x-8 xs:gap-x-6">
+                            <div id="copy" className="relative w-6">
+                              <Image
+                                className="cursor-pointer"
+                                src="/assets/others/copy.svg"
+                                alt="copy"
+                                width={30}
+                                height={30}
+                              />
+                            </div>
+                            <div id="bookmark" className="relative w-6">
+                              <Image
+                                className="cursor-pointer"
+                                src="/assets/others/bookmark.svg"
+                                alt="bookmark"
+                                width={30}
+                                height={30}
+                              />
+                            </div>
+                            <div id="plan" className="relative w-6">
+                              <Image
+                                className="cursor-pointer"
+                                src="/assets/others/plan.svg"
+                                alt="plan"
+                                width={30}
+                                height={30}
+                              />
+                            </div>
+                            <div id="share" className="relative w-6">
+                              <Image
+                                className="cursor-pointer"
+                                src="/assets/others/share.svg"
+                                alt="share"
+                                width={30}
+                                height={30}
+                              />
+                            </div>
+                            <div id="report" className="relative w-6">
+                              <Image
+                                className="cursor-pointer"
+                                src="/assets/others/report.svg"
+                                alt="report"
+                                width={30}
+                                height={30}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            ))}
         </div>
       </div>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+      {/* ---End body---- */}
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      {/* ---End middle part--- */}
+    </>
   );
 }
